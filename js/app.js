@@ -1,11 +1,25 @@
 const allPlayer = () => {
+    document.getElementById('player-container').innerHTML = '';
+    document.getElementById('spiner').style.display = 'block'
     const searchValue = document.getElementById('search-box').value;
+    document.getElementById('search-box').value = '';
     const url = `https://www.thesportsdb.com/api/v1/json/2/searchplayers.php?p=${searchValue}`
     fetch(url)
         .then(res => res.json())
-        .then(data => showPlayerDetails(data.player))
+        .then(data => {
+            console.log(data.player == null);
+            if (data.player == null) {
+                document.getElementById('spiner').style.display = 'block';
+            }
+            else {
+                showPlayerDetails(data.player);
+                document.getElementById('spiner').style.display = 'none';
+            }
+        })
 
 }
+
+
 
 const showPlayerDetails = players => {
     const parent = document.getElementById('player-container');
@@ -36,10 +50,19 @@ const playerDetail = info => {
         .then(data => setDetails(data.players[0]));
 }
 const setDetails = id => {
+    if (id.strGender == 'Male') {
+        document.getElementById("male").style.display = "block";
+        document.getElementById("female").style.display = "none";
+    }
+    else {
+        document.getElementById("male").style.display = "none";
+        document.getElementById("female").style.display = "block";
+    }
     document.getElementById('deatil-container').innerHTML = `
     <div>
-    <img src = "" alt="">
+    <img width = "50%" src = "${id.strThumb}" alt="">
     <h1> Name : ${id.strPlayer} </h1>
     </div>
     `;
 }
+
